@@ -12,35 +12,36 @@ def initialise(x):
   return previous.reshape(x,x),current.reshape(x,x)
 
 
-def neighbours(i,j,old):
+def neighbours(i,j,old,size):
   s=0
   for x in [i-1, i, i+1]:
     for y in [j-1, j, j+1]:
       if(x == i and y == j):
           continue
-      if(x != 100 and y != 100):
+      if(x !=size  and y !=size):
           s += old[x][y]
-      elif(x == 100 and y != 100):
+      elif(x == size and y !=size):
           s += old[0][y]
-      elif(x != 100 and y == 100):
+      elif(x != size and y == size):
           s += old[x][0]
       else:
           s += old[0][0]
   return s;
 
 def play(): 
-  old,new=initialise(100)
-  gen=500
+  size=100
+  old,new=initialise(size)
+  gen=100
   pylab.pcolormesh(old)
   pylab.colorbar()
   pylab.savefig("gen-0.png")
   t=1
 
   while(t<=gen):
-    if(t%10==0):print(t)
-    for i in range(100):
-      for j in range(100):
-         live=neighbours(i,j,old)
+    if(t%1==0):print(t)
+    for i in range(size):
+      for j in range(size):
+         live=neighbours(i,j,old,size)
          if(old[i][j] == 1 and live < 2):
             new[i][j] = 0 
          elif(old[i][j] == 1 and (live == 2 or live == 3)):
@@ -57,10 +58,10 @@ def play():
     old=new.copy()
     t=t+1
   gif_name=str(gen)
-  fps=12
+  fps=5
   file_list=glob.glob('*.png')
   list.sort(file_list, key=lambda x: int(x.split('.png')[0].split('-')[1]))
-  clip = mpy.ImageSequenceClip(file_list[0:41],fps=fps)
+  clip = mpy.ImageSequenceClip(file_list[0:101],fps=fps)
   clip.write_videofile("gameoflife.mp4",fps=fps)
 
   del clip
