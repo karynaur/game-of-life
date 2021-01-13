@@ -4,7 +4,7 @@ import glob
 import cv2
 import os
 
-
+#initialize the grid with random values (0 and 1)
 def initialise(x):
   previous=np.zeros(x*x,dtype='i')
   current=np.zeros(x*x,dtype='i')
@@ -12,7 +12,7 @@ def initialise(x):
   previous[samp]=1
   return previous.reshape(x,x),current.reshape(x,x)
 
-
+#rules 
 def neighbours(i,j,old,size):
   s=0
   for x in [i-1, i, i+1]:
@@ -29,10 +29,11 @@ def neighbours(i,j,old,size):
           s += old[0][0]
   return s;
 
+#play the game, save images and make a mp4 file using OpenCV
 def play(): 
-  size=50
+  size=100
   old,new=initialise(size)
-  gen=200
+  gen=150
   pylab.pcolormesh(old)
   pylab.colorbar()
   pylab.savefig("gen-0.png")
@@ -73,7 +74,9 @@ def play():
     out.write(img_array[i])
   out.release()
 
+  #delete individual images
   a = [os.remove(f) for f in file_list]
 
+"""  MAIN FUNCTION  """
 play()
 
