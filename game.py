@@ -33,7 +33,7 @@ def neighbours(i,j,old,size):
 def play(): 
   size=100
   old,new=initialise(size)
-  gen=150
+  gen=100
   pylab.pcolormesh(old)
   pylab.colorbar()
   pylab.savefig("gen-0.png")
@@ -68,15 +68,15 @@ def play():
     h,w,l=img.shape
     size=(w,h)
     img_array.append(img)
-    
-  out=cv2.VideoWriter('The_game.mp4',cv2.VideoWriter_fourcc(*'DIVX'),5, size)
+  out=cv2.VideoWriter('thegame.mp4',cv2.VideoWriter_fourcc(*'DIVX'),2, size)
   for i in range(len(img_array)):
     out.write(img_array[i])
   out.release()
 
   #delete individual images
   a = [os.remove(f) for f in file_list]
-
+  
+  print(len(img_array))
 """  MAIN FUNCTION  """
 play()
 
