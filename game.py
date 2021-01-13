@@ -1,9 +1,10 @@
 import numpy as np
 import pylab
 import glob
-import moviepy.editor as mpy
-
+import cv2
 import os
+
+
 def initialise(x):
   previous=np.zeros(x*x,dtype='i')
   current=np.zeros(x*x,dtype='i')
@@ -29,16 +30,16 @@ def neighbours(i,j,old,size):
   return s;
 
 def play(): 
-  size=100
+  size=50
   old,new=initialise(size)
-  gen=100
+  gen=200
   pylab.pcolormesh(old)
   pylab.colorbar()
   pylab.savefig("gen-0.png")
   t=1
 
   while(t<=gen):
-    if(t%1==0):print(t)
+    if(t%20==0):print(t)
     for i in range(size):
       for j in range(size):
          live=neighbours(i,j,old,size)
@@ -51,20 +52,27 @@ def play():
          elif(old[i][j] == 0 and live == 3):
             new[i][j] = 1
 
-    if(t%5==0):
-      pylab.pcolormesh(new)
-      pylab.savefig("gen-%d.png" %t)
+    
+    pylab.pcolormesh(new)
+    pylab.savefig("gen-%d.png" %t)
 
     old=new.copy()
     t=t+1
   gif_name=str(gen)
-  fps=5
-  file_list=glob.glob('*.png')
-  list.sort(file_list, key=lambda x: int(x.split('.png')[0].split('-')[1]))
-  clip = mpy.ImageSequenceClip(file_list[0:101],fps=fps)
-  clip.write_videofile("gameoflife.mp4",fps=fps)
+  img_array=[]
+  file_list= glob.glob('*.png')
 
-  del clip
+  for i in file_list:
+    img=cv2.imread(i)
+    h,w,l=img.shape
+    size=(w,h)
+    img_array.append(img)
+    
+  out=cv2.VideoWriter('The_game.mp4',cv2.VideoWriter_fourcc(*'DIVX'),5, size)
+  for i in range(len(img_array)):
+    out.write(img_array[i])
+  out.release()
+
   a = [os.remove(f) for f in file_list]
 
 play()
